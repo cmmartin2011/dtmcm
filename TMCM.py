@@ -93,17 +93,18 @@ def tmcmDisjoint(X, P, Q, ALSMaxIter, Tol = 1e-5):
 
 rows_names, columns_names, datamatrix = get_datamatrix_csv2(r"BaseBE.csv", center = True, scale = True)
 models = convex_hull(datamatrix, 10, 7, ALSMaxIter = 100)
-print("Models:\n", models)
 plot_ch(models)
+ToExcel(models, ['Models'])
 
-#A, B, G, Fit, elapsed_time = tmcmALS(datamatrix, 5, 5, 100)
-A, B, G, Fit, elapsed_time = tmcmDisjoint(datamatrix, 5, 5, 100, 1e-5)
-ToExcel(A, rows_names)
-ToExcel(B, columns_names)
-ToExcel(G, ['DC1-A', 'DC2-A', 'DC3-A', 'DC4-A', 'DC5-A'])
-print("Fit:", Fit)
-print("Elapsed time (s):", elapsed_time)
-
-#for i in range(5):
-#    A, B, G, Fit, elapsed_time = tmcmDisjoint(datamatrix, 5, 5, 100, 1e-5)
-#    print(i, " - ", Fit)
+bestA, bestB, bestG = None, None, None
+best = 0;
+for i in range(20):
+    A, B, G, Fit, elapsed_time = tmcmDisjoint(datamatrix, 5, 5, 100, 1e-5)
+    print(i + 1, " - ", Fit, elapsed_time)
+    if (Fit > best):
+        best = Fit
+        bestA, bestB, bestG = A, B, G
+print("Fit:", best)
+ToExcel(bestA, rows_names)
+ToExcel(bestB, columns_names)
+ToExcel(bestG, ['DC1-A', 'DC2-A', 'DC3-A', 'DC4-A', 'DC5-A'])
